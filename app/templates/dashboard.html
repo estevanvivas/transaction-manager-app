@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Transacciones – Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0a0a1a] text-white min-h-screen">
+
+    <!-- ═══ Decorative blobs ═══ -->
+    <div class="blob w-[500px] h-[500px] bg-purple-600/10 -top-40 -left-40 animate-pulse-slow"></div>
+    <div class="blob w-[400px] h-[400px] bg-blue-600/10 bottom-0 -right-32 animate-pulse-slow delay-300"></div>
+
+    <!-- ═══ Sidebar + Main layout ═══ -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- ── Sidebar ─────────────────────────────────── -->
+        <aside class="hidden lg:flex flex-col w-72 h-screen border-r border-white/5 bg-[#0a0a1a]/80 backdrop-blur-xl p-6 flex-shrink-0">
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                </div>
+                <span class="text-sm font-semibold text-white/70">
+                    Gestor de Transacciones
+                </span>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 text-white/90 text-sm font-medium">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </nav>
+
+            <!-- User section at bottom -->
+            <div class="border-t border-white/5 pt-4 mt-4">
+                <div class="flex items-center gap-3 px-2">
+                    <div id="sidebar-avatar" class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-sm font-bold">
+                        ?
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="sidebar-name" class="text-sm font-medium text-white/80 truncate">Cargando...</p>
+                        <p id="sidebar-email" class="text-xs text-white/40 truncate">...</p>
+                    </div>
+                </div>
+                <button id="logout-btn"
+                        class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- ── Main Content ────────────────────────────── -->
+        <main class="flex-1 overflow-y-auto">
+
+            <!-- Top bar (mobile) -->
+            <header class="lg:hidden flex items-center justify-between px-6 py-4 border-b border-white/5">
+                <a href="/" class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-semibold text-white/70">
+                        Gestor de Transacciones
+                    </span>
+                </a>
+                <button id="logout-btn-mobile"
+                        class="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
+                        onclick="API.logout()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                </button>
+            </header>
+
+            <div class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+                <!-- ═══ Welcome Banner ═══ -->
+                <div class="animate-fade-in-up">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold">
+                                Bienvenid@, <span id="user-name" class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Usuario</span>!
+                            </h1>
+                            <p id="user-email" class="text-sm text-white/40 mt-1">correo@ejemplo.com</p>
+                        </div>
+                        <button id="refresh-btn"
+                                class="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                                title="Actualizar datos">
+                            <svg class="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Hidden avatar letter for JS -->
+                    <span id="user-avatar" class="hidden"></span>
+                </div>
+
+                <!-- ═══ Balance Card ═══ -->
+                <div class="animate-fade-in-up delay-100">
+                    <div class="glass rounded-3xl p-8 md:p-10 relative overflow-hidden">
+                        <!-- Gradient accent -->
+                        <div class="absolute top-0 left-0 w-full h-1 gradient-primary"></div>
+
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                            <div>
+                                <p class="text-sm font-medium text-white/40 uppercase tracking-wider mb-2">Saldo Disponible</p>
+                                <p id="balance-amount" class="text-4xl md:text-5xl font-bold text-emerald-400 tracking-tight">
+                                    $0.00
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button id="btn-deposit"
+                                        class="flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 text-sm font-medium hover:bg-emerald-500/25 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4"/>
+                                    </svg>
+                                    Depositar
+                                </button>
+                                <button id="btn-withdraw"
+                                        class="flex items-center gap-2 px-5 py-3 rounded-xl bg-red-500/15 border border-red-500/25 text-red-400 text-sm font-medium hover:bg-red-500/25 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20V4m0 0l-4 4m4-4l4 4"/>
+                                    </svg>
+                                    Retirar
+                                </button>
+                                <button id="btn-transfer"
+                                        class="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-500/15 border border-purple-500/25 text-purple-400 text-sm font-medium hover:bg-purple-500/25 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                    </svg>
+                                    Transferir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ Transactions Section ═══ -->
+                <div class="animate-fade-in-up delay-200">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold">Movimientos Recientes</h2>
+                        <span class="text-xs text-white/30 bg-white/5 px-3 py-1.5 rounded-lg">
+                            Último día
+                        </span>
+                    </div>
+
+                    <!-- Transactions list -->
+                    <div class="glass rounded-2xl p-4 md:p-6">
+                        <div id="transactions-list" class="space-y-3">
+                            <!-- JS populated -->
+                        </div>
+
+                        <!-- Empty state -->
+                        <div id="transactions-empty" class="hidden text-center py-16">
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </div>
+                            <p class="text-white/40 text-sm mb-2">No hay movimientos aún</p>
+                            <p class="text-white/25 text-xs">Realiza tu primer depósito para comenzar</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ Transaction Modal ═══ -->
+    <div id="transaction-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-content glass rounded-3xl p-8 w-full max-w-md relative">
+            <!-- Close button -->
+            <button id="modal-close"
+                    class="absolute top-4 right-4 p-2 rounded-lg bg-white/5 text-white/40 hover:text-white/80 hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <h3 id="modal-title" class="text-xl font-bold mb-6">Realizar Operación</h3>
+
+            <form id="modal-form" class="space-y-5">
+                <!-- Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-white/60 mb-2">Monto</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-white/40 font-semibold">$</span>
+                        <input id="modal-amount" type="number" step="0.01" min="0.01" required
+                               class="input-field w-full pl-10 pr-4 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none"
+                               placeholder="0.00">
+                    </div>
+                </div>
+
+                <!-- Recipient (only for transfers) -->
+                <div id="recipient-group" class="hidden">
+                    <label class="block text-sm font-medium text-white/60 mb-2">Usuario destinatario</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-white/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </span>
+                        <input id="modal-recipient" type="text"
+                               class="input-field w-full pl-12 pr-4 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none"
+                               placeholder="nombre_usuario">
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button" id="modal-cancel"
+                            class="btn-secondary flex-1 py-3 rounded-xl text-sm font-medium text-white/60">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="modal-submit"
+                            class="btn-primary flex-1 py-3 rounded-xl text-sm font-semibold text-white">
+                        Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+    <!-- Sync sidebar avatar/name -->
+    <script>
+        const observer = new MutationObserver(() => {
+            const name = document.getElementById('user-name');
+            const email = document.getElementById('user-email');
+            const avatar = document.getElementById('user-avatar');
+            const sName = document.getElementById('sidebar-name');
+            const sEmail = document.getElementById('sidebar-email');
+            const sAvatar = document.getElementById('sidebar-avatar');
+            if (sName && name) sName.textContent = name.textContent;
+            if (sEmail && email) sEmail.textContent = email.textContent;
+            if (sAvatar && avatar) sAvatar.textContent = avatar.textContent;
+        });
+        const target = document.getElementById('user-name');
+        if (target) observer.observe(target, { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>
+
